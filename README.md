@@ -1,14 +1,11 @@
 # Fitting Poisson  distribution
 # Aim : 
-
 To fit poisson distribution for the arrival of objects per minute from the feeder
 
 # Software required :  
-
 Python and Visual component tool
 
 # Theory:
-
 The Poisson distribution is the discrete probability distribution of the number of events occurring in a given time period, given the average number of times the event occurs over that time period.
 
 ![image](https://user-images.githubusercontent.com/104613195/166248326-fd042076-8b0b-40c4-8b11-1d8e8fcb74db.png)
@@ -21,22 +18,75 @@ The Poisson distribution is the discrete probability distribution of the number 
 4. The probability of an event occurring is proportional to the length of the time period. 
  
 # Procedure :
-
 ![image](https://user-images.githubusercontent.com/104613195/166251988-d0c53205-6080-4f7b-ae4c-398178586637.png)
 
 # Experiment :
-
 ![image](https://user-images.githubusercontent.com/103921593/230282876-f4a5afbf-cac1-4648-a1b0-c78840638a8e.png)
 
 # Program :
+```python
+import numpy as np
+import math
+import scipy.stats
 
+L = [int(i) for i in input("Enter values: ").split()]
+N = len(L)
+M = max(L)
+
+X = []
+f = []
+
+for i in range(M + 1):
+    c = 0
+    for j in range(N):
+        if L[j] == i:
+            c = c + 1
+    f.append(c)
+    X.append(i)
+
+Sff = np.sum(f)
+
+p = []
+for i in range(M + 1):
+    p.append(f[i] / Sff)
+
+mean = np.inner(X, p)
+
+p = []
+E = []
+xi = []
+
+print("X P(X=x) Obs.Fr Exp.Fr xi")
+print("--------------------------")
+
+for x in range(M + 1):
+    p.append(math.exp(-mean) * mean**x / math.factorial(x))
+    E.append(p[x] * Sff)
+    xi.append((f[x] - E[x])**2 / E[x])
+    print("%2.2f %2.3f %4.2f %3.2f %3.2f" %
+          (x, p[x], f[x], E[x], xi[x]))
+
+print("--------------------------")
+
+cal_chi2_sq = np.sum(xi)
+
+print(f"Calculated value of Chi square is {cal_chi2_sq:.2f}")
+
+df = M - 1
+table_chi2 = scipy.stats.chi2.ppf(1 - 0.01, df=df)
+
+print(f"Table value of chi square at 1% level is {table_chi2:.2f}")
+
+if cal_chi2_sq < table_chi2:
+    print("The given data can be fitted in Poisson Distribution at 1% LOS")
+else:
+    print("The given data cannot be fitted in Poisson Distribution at 1% LOS")
+```
  
-
 # Output : 
+<img width="680" height="319" alt="image" src="https://github.com/user-attachments/assets/e0fd6fb3-14fd-464d-bc1d-84133caf264e" />
 
 
 
 # Results
-
 The Poisson distribution is fitted for the objects arrived from feeder per minute and the data is tested using Chi-square test. 
- 
